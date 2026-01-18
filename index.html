@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RN Energy Smart Controller</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0a2a43;
+  color:white;
+}
+
+h2{
+  text-align:center;
+  margin:10px 0;
+}
+
+.container{
+  padding:10px;
+}
+
+.card{
+  background:#123a5c;
+  border-radius:15px;
+  padding:15px;
+  margin-bottom:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:20px;
+  background:#1abc9c;
+  color:black;
+  font-weight:bold;
+}
+
+button.off{
+  background:#e74c3c;
+  color:white;
+}
+
+.led{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:red;
+  display:inline-block;
+}
+
+.led.on{
+  background:#00ff5a;
+  box-shadow:0 0 8px #00ff5a;
+}
+
+.tank{
+  width:70px;
+  height:140px;
+  border:2px solid white;
+  border-radius:10px;
+  position:relative;
+  overflow:hidden;
+}
+
+.fill{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  background:#00cfff;
+  height:50%;
+  transition:0.5s;
+}
+
+.label{
+  text-align:center;
+  margin-top:6px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>RN ENERGY</h2>
+
+<div class="container">
+
+<!-- MOTOR CARD -->
+<div class="card">
+  <div class="row">
+    <b>Motor</b>
+    <span class="led" id="motorLed"></span>
+  </div>
+  <br>
+  <button onclick="toggleMotor()" id="motorBtn">ON</button>
+</div>
+
+<!-- MODE CARD -->
+<div class="card">
+  <div class="row">
+    <b>Mode</b>
+    <b id="modeText">AUTO</b>
+  </div>
+  <br>
+  <button onclick="toggleMode()">Change Mode</button>
+</div>
+
+<!-- LEVEL CARD -->
+<div class="card row">
+  <div>
+    <div class="tank">
+      <div class="fill" id="boreFill"></div>
+    </div>
+    <div class="label">Borewell</div>
+  </div>
+
+  <div>
+    <div class="tank">
+      <div class="fill" id="tankFill"></div>
+    </div>
+    <div class="label">Tank</div>
+  </div>
+</div>
+
+<!-- STATUS CARD -->
+<div class="card">
+  <b>Status:</b>
+  <span id="statusText">Normal</span>
+</div>
+
+</div>
+
+<script>
+let motor=false;
+let mode="AUTO";
+let boreLevel=70;
+let tankLevel=30;
+
+function toggleMotor(){
+  motor=!motor;
+  document.getElementById("motorLed").classList.toggle("on",motor);
+  let btn=document.getElementById("motorBtn");
+  btn.textContent=motor?"OFF":"ON";
+  btn.className=motor?"off":"";
+}
+
+function toggleMode(){
+  mode = mode==="AUTO"?"MANUAL":"AUTO";
+  document.getElementById("modeText").textContent=mode;
+}
+
+function updateLevels(){
+  boreLevel-=2;
+  tankLevel+=2;
+
+  if(boreLevel<10){
+    document.getElementById("statusText").textContent="Dry Run Warning";
+  }
+
+  document.getElementById("boreFill").style.height=boreLevel+"%";
+  document.getElementById("tankFill").style.height=tankLevel+"%";
+}
+
+setInterval(updateLevels,2000);
+</script>
+
+</body>
+</html>
